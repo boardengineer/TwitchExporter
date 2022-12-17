@@ -5,6 +5,7 @@ import basemod.interfaces.PostInitializeSubscriber;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 
@@ -34,7 +35,7 @@ public class TwitchExporter implements PostInitializeSubscriber {
     }
 
     static void sendRequest() throws IOException {
-        URL url = new URL("https://boardengineer.net/player/players/1/");
+        URL url = new URL("https://boardengineer.net/player/hiss/1/");
         HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
         httpCon.setDoOutput(true);
         httpCon.setRequestMethod("PUT");
@@ -72,15 +73,23 @@ public class TwitchExporter implements PostInitializeSubscriber {
                 relicJson.addProperty("description", relic.description);
                 relicJson.addProperty("x_pos", relic.hb.x);
                 relicJson.addProperty("y_pos", relic.hb.y);
+                relicJson.addProperty("width", relic.hb.width);
+                relicJson.addProperty("height", relic.hb.height);
+
 
                 relicIndex++;
                 relicsArray.add(relicJson);
             }
         }
 
-        jsonBody.addProperty("player_current_hp", playerHp);
+
         jsonBody.addProperty("twitch_username", "twitchslayssspire");
+
+        jsonBody.addProperty("player_current_hp", playerHp);
         jsonBody.addProperty("player_max_hp", playerMaxHp);
+
+        jsonBody.addProperty("screen_height", Settings.HEIGHT);
+        jsonBody.addProperty("screen_width", Settings.WIDTH);
 
         jsonBody.add("relics", relicsArray);
 
